@@ -17,6 +17,20 @@ class UserController {
             next(e)
         }
     }
+    getELibAuthor = async (req,res,next)=>{
+        try {
+            res.json(await ElibraryService.getELibAuthorById(req.query?.id))
+        }catch (e){
+            next(e)
+        }
+    }
+    getAllId = async (req,res,next) =>{
+        try {
+            res.json(await  UserService.getUsersId())
+        }catch (e){
+            next(e)
+        }
+    }
 
 }
 
