@@ -4,7 +4,7 @@ class ReportProvider {
     #connection = Postgresql.getDB()
     getAllReports = async () => {
         return (await this.#connection.query(`
-            select id, title, template_path from "report" 
+            select * from "report" 
         `)).rows
     }
     getReportById = async (id) => {

@@ -2,19 +2,25 @@ import superagent from 'superagent'
 import {load} from 'cheerio'
 import _ from 'lodash'
 import ApiException from "./api.exception.js";
-
+import ELibRequester from "./ELibRequester.js";
 
 const baseUrl = 'https://www.elibrary.ru'
+
+function sendReq(url) {
+    return async function () {
+        return await superagent
+            .agent()
+            .get(url)
+            .redirects(10)
+            .send()
+    }
+}
 
 export const getAuthor = async id => {
     try {
         const authorUrl = `${baseUrl}/author_profile.asp?authorid=${id}`
 
-        const {text} = await superagent
-            .agent()
-            .get(authorUrl)
-            .redirects(5)
-            .send()
+        const {text} = await ELibRequester.send(sendReq(authorUrl))
 
 
         const author = {}
@@ -85,21 +91,22 @@ const parseArticle = $ => {
     return articles
 }
 
-const getPostQuery = async (pageNum, url) => {
-    const {text} = await superagent
-        .agent()
-        .get(`${url}&pagenum=${pageNum.toString()}`)
-        .redirects(10)
-        .send()
-    return text
-}
+// const getPostQuery = async (pageNum, url) => {
+//     const {text} = await superagent
+//         .agent()
+//         .get(`${url}&pagenum=${pageNum.toString()}`)
+//         .redirects(10)
+//         .send()
+//     return text
+// }
 
 
 export const getArticles = async id => {
     try {
-        const articlesUrl = `${baseUrl}/author_items.asp?pubrole=100&show_refs=1&authorid=${id}`
+        const articlesUrl = `${baseUrl}/author_items.asp?pubrole=100&show_refs=1&authorid=${id}&pagenum=1`
 
-        const text = await getPostQuery(1, articlesUrl)
+        const {text} = await ELibRequester.send(sendReq(articlesUrl))
+        // const text = await getPostQuery(1, articlesUrl)
 
 
         const $ = load(text)
@@ -133,11 +140,8 @@ export const getUserArticle = async (id) => {
         console.time("parse")
         console.time("fetch")
         console.log("fetching")
-        const {text} = await superagent
-            .agent()
-            .get(`${baseUrl}/item.asp?id=${id}`)
-            .send()
-
+        const url = `${baseUrl}/item.asp?id=${id}`
+        const {text} = await ELibRequester.send(sendReq(url))
         const $ = load(text)
 
         console.timeEnd("fetch")

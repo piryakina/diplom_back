@@ -1,6 +1,4 @@
 import ApiException from "../lib/api.exception.js";
-import {getUserArticle} from "../lib/parser.js";
-import ElibraryProvider from "../db/providers/elibrary.provider.js";
 import ReportProvider from "../db/providers/report.provider.js";
 
 class ReportService {
