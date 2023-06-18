@@ -3,6 +3,7 @@ import {load} from 'cheerio'
 import _ from 'lodash'
 import ApiException from "./api.exception.js";
 import ELibRequester from "./ELibRequester.js";
+import DocumentService from "../services/document.service.js";
 
 const baseUrl = 'https://www.elibrary.ru'
 
@@ -208,8 +209,57 @@ export const getUserArticle = async (id) => {
             content.udk = udkResult[0].split(":")[1];
             console.log(content.udk)
         }
+        // $('').each((i, el)=>{
+        //     console.log(el)
+        // })
+        // const temp = $('body')
+        //     .children('table')
+        //     .children("tbody")
+        //     .children("tr")
+        //     .children("td")
+        //     .children("table")
+        //     .children("tbody")
+        //     .children("tr")
+        //     .children("td")
+        //     .children("table")
+        //     .children("tbody")
+        //     .children("tr")
+        //     .children("td")
+        //     .children("div")
+        //     .children("table")
+        //     .children("tbody")
+        //     .children("tr")
+        //     .children("td")
+        // console.log(temp)
+        const pageDOM = 'body > table > tbody > tr > td > table:first > tbody > tr > td > table > tbody > tr > td > '
+        const headDom = pageDOM + 'div[style="width:580px; margin:0; border:0; padding:0; "] > table[width="580"] > tbody >'
+        // const titleValue = $(pageDOM + 'table > tbody > tr > td[width="534"]').text()
+        // const temp = $(headDom)
+        const typeValue = $(headDom + 'tr > td[width="574"] > font[color="#00008f"]:first').text()
+        console.log(typeValue)
         console.log(`Парсинг закончен`)
         console.timeEnd("parse")
+        switch (typeValue) {
+            case "грант": {
+                console.log('грант')
+            }
+            break;
+            case "статья в журнале - научная статья":{
+                console.log("статья в журнале")
+                const obj = {
+                    fields: {
+                        ...content,
+                        authors: content.authors.join(", "),
+                    },
+                    type: "article",
+                }
+                content.id = await DocumentService.addNewDocument(obj, 9)
+            }
+            break;
+            default: {
+                console.warn(`${typeValue} не принимается!`)
+            }
+        }
         return content
     } catch (err) {
         throw ApiException.BadGateway('Ошибка при парсинге', err)

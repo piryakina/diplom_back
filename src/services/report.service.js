@@ -13,6 +13,10 @@ class ReportService {
         return await ReportProvider.getReportById(id)
     }
 
+    getGrantsFromBd = async () => {
+        return await ReportProvider.getGrants()
+    }
+
 }
 
 export default new ReportService()

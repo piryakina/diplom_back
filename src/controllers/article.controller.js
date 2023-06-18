@@ -1,5 +1,6 @@
 import ElibraryService from "../services/elibrary.service.js";
 import UserService from "../services/user.service.js";
+import DocumentService from "../services/document.service.js";
 
 class ArticleController {
     getELibArticles = async (req, res, next) => {
@@ -20,7 +21,7 @@ class ArticleController {
 
     addArticles = async (req,res,next)=>{
         try {
-            res.json(await ElibraryService.addElibArticles(req.query?.id))
+            res.json(await ElibraryService.addELibArticles(req.query?.id))
         }catch (e){
             next(e)
         }
@@ -32,12 +33,21 @@ class ArticleController {
             next(e)
         }
     }
-    // addDocumentByHands = async (req,res,next)=>{
-    //     try {
-    //         res.json(await UserService.addDocument(req.body))
-    //     }catch (e){
-    //         next(e)
-    //     }
-    // }
+    getDocumentsByUserId = async (req,res,next)=>{
+        try {
+            const t = await DocumentService.getDocs(req.query?.id)
+            res.json(t)
+        }catch (e){
+            next(e)
+        }
+    }
+
+    addNewDocument = async (req, res, next) => {
+        try{
+            res.json(await DocumentService.addNewDocument(req.body?.doc, 9))
+        }catch (e){
+            next(e)
+        }
+    }
 }
 export default new ArticleController()

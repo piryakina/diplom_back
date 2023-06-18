@@ -12,6 +12,12 @@ class ReportProvider {
             select * from "report" where id=$1
         `,[id])).rows
     }
+
+    getGrants = async () => {
+        return (await this.#connection.query(`
+            select * from "grants"
+        `)).rows
+    }
 }
 
 export default new ReportProvider()

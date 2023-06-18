@@ -26,7 +26,7 @@ class ELibraryService {
         return await getUserArticle(id)
     }
 
-    addElibArticles = async (id) => {
+    addELibArticles = async (id) => {
         if (!id) {
             throw ApiException.BadRequest("invalid data")
         }

@@ -1,6 +1,6 @@
 import docx from "docx";
 
-const template_14 = new docx.Document({
+export const template_14 = new docx.Document({
     sections: [
         {
             children: [
@@ -28,5 +28,3 @@ const template_14 = new docx.Document({
         }
     ]
 })
-
-export default template_14
